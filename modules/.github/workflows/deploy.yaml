@@ -1,0 +1,33 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      env:
+        description: "Environment to deploy to"
+        required: true
+        default: dev
+        type: choice
+        options:
+          - dev
+          - prod
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Make script executable
+        run: chmod +x run.sh
+
+      - name: Set environment variable
+        run: echo "DEPLOY_ENV=${{ github.event.inputs.env || 'dev' }}" >> $GITHUB_ENV
+
+      - name: Deploy to environment
+        run: ./run.sh $DEPLOY_ENV
