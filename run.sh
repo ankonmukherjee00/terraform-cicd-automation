@@ -2,9 +2,9 @@
 
 set -e 
 
-configlist=("dev" "prod")
+configlist=("dev" "prod" "stag")
 
-Env=$2
+Env=$1
 
 if [[ -z "$Env"  ]]; then
   echo "Error: Either Env or Config is empty."
@@ -18,7 +18,7 @@ for i in "${configlist[@]}"; do
   [[ "$i" == "$Env" ]] && found_env=true
 done
 
-if [["$found_env" != true ]]; then
+if [["$found_env" !=true ]]; then
   echo "Value '$Env' is not in the list: ${configlist[*]}"
   exit 1
 fi

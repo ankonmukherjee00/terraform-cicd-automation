@@ -24,10 +24,10 @@ module "ecs" {
   container_name        = "my-container"
   container_image       = "my-repo/my-image:latest"
   service_name          = "my-ecs-service"
-  cluster_id            = module.ecs.ecs_cluster_name
+  cluster_id = "abc"
   desired_count         = 2
   subnet_ids            = [module.vpc.subnet_a_id, module.vpc.subnet_b_id]
-  security_group_ids    = ["sg-0123456789abcdef0"]  # Replace with your SG ID
+  security_group_ids    = ["sg-0123456789abcdef0"]  
 }
 
 module "ecr" {
@@ -36,19 +36,18 @@ module "ecr" {
 }
 
 module "subnets" {
-  source              = "./modules/subnets"
+  source              = "./modules/subnet"
   vpc_id              = module.vpc.vpc_id
   subnet_cidr_blocks  = ["10.0.3.0/24", "10.0.4.0/24"]
   azs                 = ["us-west-2a", "us-west-2b"]
   map_public_ip_on_launch = true
 }
 module "alb" {
-  source = "./modules/alb"
-
+ source = "./modules/alb"
   name             = "my-ecs-app"
-  vpc_id           = var.vpc_id
+  vpc_id           =  module.vpc.vpc_id
   subnets          = var.public_subnets
-  security_groups  = [aws_security_group.alb_sg.id]
+  security_groups  = ["sg-0123456789abcdef0"]
   listener_port    = 80
   target_port      = 80
   target_type      = "ip"
